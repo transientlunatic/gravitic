@@ -10,3 +10,4 @@ class Pipeline:
         for name, block in self.blocks.items():
             if not block.ready:
                 block.run()
+            block.package()

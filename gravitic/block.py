@@ -1,5 +1,5 @@
 class Block:
-    def __init__(self, specification):
+    def __init__(self, specification, pipeline):
         """
         Initialise a production block.
         
@@ -7,7 +7,10 @@ class Block:
         part of an analysis.
         """
         self.specification = specification
+        self.ready = False
 
+    def package(self):
+        pass
 
         
 class BlockMap:
