@@ -10,7 +10,7 @@ class Training(Block):
     outputs = 1
     
     def __init__(self, specification, pipeline=None):
-        super().__init__(specification)
+        super().__init__(specification, pipeline)
         self.ready = False
         self.data_generator = None
         
