@@ -26,6 +26,8 @@ class Training(Block):
         if not self.ready:
             self.run()
         return [self.data_generator.payload]
-    
+
+    def package(self):
+        self.data_generator.package(f"{self.name}.dat")
 
 blockmap.register_block("data.waveform.training", Training)
