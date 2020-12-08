@@ -7,6 +7,7 @@ class Block:
         part of an analysis.
         """
         self.specification = specification
+        self.name = specification['name']
 
 
         
