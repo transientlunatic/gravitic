@@ -13,6 +13,7 @@ class Training(Block):
         super().__init__(specification, pipeline)
         self.ready = False
         self.data_generator = None
+        self.output_files = {"training_data":f"{self.name}.dat"}
         
     def run(self):
         self.data_generator = waveform.MultiWaveformTraining(specification = self.specification)
