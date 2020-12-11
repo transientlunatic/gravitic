@@ -33,7 +33,11 @@ class Block:
         specification['status'] = self.status
         specification['outputs'] = self.output_files
         return specification
-        
+
+    @property
+    def status(self):
+        return self.status_flag
+    
     @status.setter
     def status(self, flag):
         """
@@ -41,9 +45,6 @@ class Block:
         """
         self.status_flag = flag
 
-    @property
-    def status(self):
-        return self.status_flag
 
 class BlockMap:
     def __init__(self):
