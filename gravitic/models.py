@@ -24,7 +24,7 @@ class HeronTrainingBlock(Block):
     The training block for heron models.
     """
     def __init__(self, specification, pipeline=None):
-        super().__init__(specification)
+        super().__init__(specification, pipeline=pipeline)
         self.ready = False
         
         self.inputs = 1
@@ -33,7 +33,8 @@ class HeronTrainingBlock(Block):
         self.model = None
         self.pipeline = pipeline
 
-        self.specification = specification
+        self.output_files = {"training_data": self.input_data['training_data'],
+                             "weights": "model_state.pth"}
         
         
     def build(self):
@@ -52,5 +53,5 @@ class HeronTrainingBlock(Block):
     def run(self):
         if not self.ready:
             self.build()
-        train(self.model)
+        train(self.model, iterations=self.specification['iterations'])
 blockmap.register_block("data.waveform.heron", HeronTrainingBlock)

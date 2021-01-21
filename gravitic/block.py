@@ -6,21 +6,24 @@ class Block:
         A production block should be a minimal computable unit for 
         part of an analysis.
         """
-        self.specification_dict = specification
         self.name = specification['name']
         self.ready = False
-
-        self.input_blocks = [pipeline.blocks[name] for name in specification["inputs"]]
+        if "inputs" in specification:
+            self.input_blocks = [pipeline.blocks[name] for name in specification["inputs"]]
+        else:
+            self.input_blocks = []
         self.input_data = {}
         for block in self.input_blocks:
             self.input_data.update({filename: data
-                                    for filename, data in block.output_files})
+                                    for filename, data in block.output_files.items()})
         
         if "status" in specification:
             self.status_flag = specification['status']
         else:
             self.status_flag = None
-            
+
+        self.specification_dict = specification
+               
     def package(self):
         pass
 
@@ -29,7 +32,7 @@ class Block:
         """
         Return the current Block specification.
         """
-        specification = self.specifcation_dict
+        specification = self.specification_dict
         specification['status'] = self.status
         specification['outputs'] = self.output_files
         return specification

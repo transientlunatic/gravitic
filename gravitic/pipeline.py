@@ -2,7 +2,8 @@
 from .block import blockmap
 class Pipeline:
     def __init__(self, production):
-        self.specification_dict = production.meta['specification']
+        self.specification_dict = production#.meta['specification']
+        print(production)
         self.production = production
         self.blocks = {}
         for spec in self.specification_dict['blocks']:

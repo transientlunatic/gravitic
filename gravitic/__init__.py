@@ -3,4 +3,4 @@ Blocks
 """
 
 from . import data
-import model
+from .models import *

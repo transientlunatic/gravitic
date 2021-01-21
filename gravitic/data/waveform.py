@@ -89,6 +89,6 @@ class MultiWaveformTraining:
                    data_all.append(data.T)
         self.payload = data_all
 
-    def package(self):
+    def package(self, outfile):
         if not isinstance(self.payload, type(None)):
             np.savetxt(outfile, np.hstack(self.payload).T)
