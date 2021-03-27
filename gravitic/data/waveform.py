@@ -2,9 +2,14 @@
 Waveform training data generation 
 """
 
-import pycbc.waveform
+try:
+    import pycbc.waveform
+    from pycbc.waveform import get_td_waveform
+except:
+    pass
+
 import numpy as np
-from pycbc.waveform import get_td_waveform
+
 import yaml
 import otter.bootstrap as bt
 import matplotlib.pyplot as plt

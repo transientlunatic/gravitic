@@ -11,11 +11,25 @@ Asimov
 
 Gravitic is designed from the ground-up to be compatible with LIGO's asimov toolkit, allowing gravitic pipelines to be managed and automated using the same tools used for established pipelines.
 
+Documentation
+-------------
+
 Do I need gravitic?
 -------------------
 
+We designed Gravitic to make it easier to prototype new machine learning components in analyses, while not needing to put together infrastructure for tasks such as trigger detection, data handling, and results post-processing.
+
+If you're working on some small part of a larger analysis, like a new sampler, new waveform model, or event a new trigger generator, then gravitic can make your life easier.
+
 Installing gravitic
 -------------------
+
+Gravitic is written in Python.
+At the moment you'll still need to install it from source by running ::
+
+  $ pip install .
+
+in the root of the project repository.
 
 Get started
 -----------
