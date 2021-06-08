@@ -26,7 +26,7 @@ class Block:
                
     def package(self):
         pass
-
+    
     @property
     def specification(self):
         """

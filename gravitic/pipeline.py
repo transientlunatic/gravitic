@@ -2,8 +2,7 @@
 from .block import blockmap
 class Pipeline:
     def __init__(self, production):
-        self.specification_dict = production#.meta['specification']
-        print(production)
+        self.specification_dict = production.meta['specification']
         self.production = production
         self.blocks = {}
         for spec in self.specification_dict['blocks']:
@@ -12,7 +11,9 @@ class Pipeline:
     def run(self):
         for name, block in self.blocks.items():
             if not block.ready:
+                print(f"Running {name}")
                 block.run()
+                self.save_state()
             block.package()
 
     @property
@@ -23,8 +24,17 @@ class Pipeline:
         return specification
 
     def save_state(self):
-        pass
+        self.specification_dict['blocks'] = []
+        for name, block in self.blocks.items():
+            self.specification_dict['blocks'].append(
+                block.specification)
+        self.production.meta['specification'] = self.specification_dict
+        self.production.update_ledger()
 
+    @property
+    def locations(self):
+        return self.production.locations
+        
     def report(self):
         """
         Produce a report for the entire pipeline.

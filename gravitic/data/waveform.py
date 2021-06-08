@@ -8,6 +8,7 @@ from pycbc.waveform import get_td_waveform
 import yaml
 import otter.bootstrap as bt
 import matplotlib.pyplot as plt
+from gravitic.block import Block
 
 class MultiWaveformTraining:
     """
