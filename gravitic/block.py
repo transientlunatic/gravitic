@@ -1,3 +1,5 @@
+import os
+
 class Block:
     def __init__(self, specification, pipeline):
         """
@@ -6,23 +8,26 @@ class Block:
         A production block should be a minimal computable unit for 
         part of an analysis.
         """
+        self.pipeline = pipeline
+        self.specification_dict = specification
         self.name = specification['name']
         self.ready = False
-        if "inputs" in specification:
-            self.input_blocks = [pipeline.blocks[name] for name in specification["inputs"]]
-        else:
-            self.input_blocks = []
+        self.input_blocks = self.dependencies
         self.input_data = {}
         for block in self.input_blocks:
             self.input_data.update({filename: data
-                                    for filename, data in block.output_files.items()})
+                                    for filename, data
+                                    in pipeline.blocks[block].output_files.items()})
+            for datum, location in self.input_data.items():
+                self.input_data[datum] = os.path.join(
+                    self.pipeline.run_location,
+                    location)
         
         if "status" in specification:
             self.status_flag = specification['status']
         else:
             self.status_flag = None
 
-        self.specification_dict = specification
                
     def package(self):
         pass
@@ -40,6 +45,13 @@ class Block:
     @property
     def status(self):
         return self.status_flag
+
+    @property
+    def finished(self):
+        if self.status in {"finished", "uploaded"}:
+            return True
+        else:
+            return False
     
     @status.setter
     def status(self, flag):
@@ -48,6 +60,15 @@ class Block:
         """
         self.status_flag = flag
 
+    @property
+    def dependencies(self):
+        if "needs" in self.specification_dict:
+            if isinstance(self.specification_dict['needs'], list):
+                return self.specification_dict['needs']
+            else:
+                return [self.specification_dict['needs']]
+        else:
+            return []
 
 class BlockMap:
     def __init__(self):

@@ -30,11 +30,15 @@ class HeronTrainingBlock(Block):
         self.inputs = 1
         self.outputs = 1
 
-        self.model = None
-        self.pipeline = pipeline
+        self.output_files = {"weights":  f"{specification['name']}.pth"}
 
-        self.output_files = {"training_data": self.input_data['training_data'],
-                             "weights":  f"{specification['name']}.pth"}
+        if self.status == "finished":
+            self.build()
+        else:
+            self.model = None
+            #self.run()
+            
+        self.pipeline = pipeline
 
     def build(self):
         self.model = HeronCUDAMix(specification=self.specification, **self.input_data)
@@ -50,13 +54,9 @@ class HeronTrainingBlock(Block):
     def run(self, **kwargs):
         if not self.ready:
             self.build()
-        if self.status_flag == "ready":
-            # Models need to be trained before the mean can be returned
-            train(self.model, iterations=self.specification['iterations'])
-            # TODO update the specification
-            # self.specification
-
-        return self.model.mean(times=kwargs['times'],
-                               p=kwargs['p'])
+        # Models need to be trained before the mean can be returned
+        train(self.model, iterations=self.specification['iterations'])
+        self.status = "finished"
+        self.ready = True
 
 blockmap.register_block("data.waveform.heron", HeronTrainingBlock)

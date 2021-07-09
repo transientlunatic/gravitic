@@ -11,7 +11,7 @@ class Training(Block):
     outputs = 1
     
     def __init__(self, specification, pipeline=None):
-        super().__init__(specification, pipeline)
+        super(Training, self).__init__(specification, pipeline)
         self.ready = False
         self.pipeline = pipeline
         self.data_generator = None
@@ -33,6 +33,6 @@ class Training(Block):
 
     def package(self):
         
-        self.data_generator.package(self.output_files["training_data"])
+        self.data_generator.package(os.path.join(self.pipeline.run_location, self.output_files["training_data"]))
 
 blockmap.register_block("data.waveform.training", Training)

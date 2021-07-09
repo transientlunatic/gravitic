@@ -75,21 +75,23 @@ class MultiWaveformTraining:
                    for i, family in enumerate(self.specification['families'])}
 
         pol_idx = {"hp": 0, "hc": 1}
-                   
+
         for q in qs:
             waveform = self.coalign(location={"mass ratio": q, "total mass": self.specification['total mass']})
             idx = (list(waveform['hp'].values())[0].sample_times > self.specification['time']['min']) & (list(waveform['hp'].values())[0].sample_times < self.specification['time']['max'])
             data = np.ones((sum(idx), 5))
             for tag, polarisation in waveform.items():
                 for approximant_tag, approximant in polarisation.items():
-                   data[:, 0] *= apx_idx[approximant_tag]
-                   data[:, 1] *= pol_idx[tag]
-                   data[:, 2]  = approximant.sample_times[idx]
-                   data[:, 3] *= q
-                   data[:, 4]  = approximant.data[idx]
-                   data_all.append(data.T)
+                    data = np.ones((sum(idx), 5))
+                    data[:, 0] *= apx_idx[approximant_tag]
+                    data[:, 1] = data[:, 1] * pol_idx[tag]
+                    data[:, 2]  = approximant.sample_times[idx]
+                    data[:, 3] *= q
+                    data[:, 4]  = approximant.data[idx]
+                    data_all.append(data.T)
         self.payload = data_all
 
     def package(self, outfile):
+        print(outfile)
         if not isinstance(self.payload, type(None)):
             np.savetxt(outfile, np.hstack(self.payload).T)

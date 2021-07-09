@@ -1,21 +1,53 @@
 """ """
+import pathlib
+import os
+import networkx as nx
 from .block import blockmap
 class Pipeline:
     def __init__(self, production):
         self.specification_dict = production.meta['specification']
         self.production = production
+
+        self.run_location = os.path.relpath(pathlib.Path(self.production.event.ledger.location).parents[0],
+                                            os.getcwd())
+        # compose computational graph
+        self.graph = nx.DiGraph()
+        
         self.blocks = {}
         for spec in self.specification_dict['blocks']:
-            self.blocks[spec['name']] = blockmap[spec['type']](spec, pipeline=self)
+            block = self.blocks[spec['name']] = blockmap[spec['type']](spec, pipeline=self)
+            self.graph.add_node(block)
+            if block.dependencies:
+                dependencies = [depblock for name, depblock in self.blocks.items()
+                                if name in block.dependencies]
+                for dependency in dependencies:
+                    self.graph.add_edge(dependency, block)
     
     def run(self):
-        for name, block in self.blocks.items():
+        for block in self.get_all_latest():
             if not block.ready:
-                print(f"Running {name}")
+                print(f"Running {block.name}")
                 block.run()
                 self.save_state()
             block.package()
+        if len(self.get_all_latest())>0:
+            self.run()
 
+    def get_all_latest(self):
+        """
+        Get all of the blocks which are not blocked by an unfinished block
+        further back in their history.
+
+        Returns
+        -------
+        set
+            A set of independent blocks which are not finished execution.
+        """
+        unfinished = self.graph.subgraph([block for block in self.blocks.values()
+                                          if block.finished == False])
+        ends = [x for x in unfinished.reverse().nodes() if unfinished.reverse().out_degree(x)==0]
+        return set(ends) # only want to return one version of each block!
+            
     @property
     def specification(self):
         specification = self.specification_dict
