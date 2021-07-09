@@ -28,6 +28,7 @@ setup(
     package_dir={'gravitic': 'gravitic'},
     entry_points={
         'console_scripts': [
+            'gravitic=gravitic.cli:gravitic'
         ]
     },
     include_package_data=True,

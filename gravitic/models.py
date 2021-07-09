@@ -1,22 +1,27 @@
 """
 Gravitic blocks for models.
 """
+try:
+    from heron.models.gw import HofTSurrogate, BBHNonSpinSurrogate
+    from heron.models.torchbased import HeronCUDA
+    import heron.models.georgebased
+    import george
+    import heron
+    import torch
+    import gpytorch
+    from gpytorch.kernels import RBFKernel
+    from gpytorch.constraints import GreaterThan, LessThan
+    from heron.models.torchbased import train, HeronCUDAMix
+except:
+    pass
 
-from heron.models.gw import HofTSurrogate, BBHNonSpinSurrogate
-from heron.models.torchbased import HeronCUDA
-import heron.models.georgebased
-import george
 import numpy as np
 
-import heron
-import torch
-import gpytorch
-from gpytorch.kernels import RBFKernel
-from gpytorch.constraints import GreaterThan, LessThan
+try:
+    from elk.waveform import Timeseries
+except:
+    pass
 
-from elk.waveform import Timeseries
-
-from heron.models.torchbased import train, HeronCUDAMix
 from gravitic.block import Block, blockmap
 
 class HeronTrainingBlock(Block):
