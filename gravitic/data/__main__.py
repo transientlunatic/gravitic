@@ -5,9 +5,8 @@ from gravitic.schedulers import Schedule
 @click.option("--start")
 @click.option("--end")
 @click.command
-@Schedule
+@Schedule(cpus=1, name="datadownload")
 def download_data(start, end):
-    print("start", start, "end", end)
     from gravitic.data import DetectorData
     data = DetectorData(start, end)
 
